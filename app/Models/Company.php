@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
+
+class Company extends Model
+{
+    /** @use HasFactory<\Database\Factories\CompanyFactory> */
+    use HasFactory;
+    use Notifiable;
+
+    protected $guarded = [];
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public static function getForSelectOptions()
+    {
+        return self::query()
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($company) => [
+                'value' => $company->id,
+                'text' => $company->name,
+            ]);
+    }
+}
